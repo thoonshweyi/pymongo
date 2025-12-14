@@ -1,5 +1,8 @@
+import pymongo # for ASCENDING / DESCENDING
 from pymongo import MongoClient
+from bson import ObjectId # add this line
 from dotenv import load_dotenv
+from pprint import pprint
 from datetime import datetime,timezone
 import os
 
@@ -14,24 +17,25 @@ try:
      db = client["mydatabase"]
      collection = db["employees"]
 
-     # insert Data
-     datas = [
-          ("zaw zaw","zawzaw@gmail.com"),
-          ("naw naw","nawnaw@gmail.com"),
-     ]
+     # Input document ID (string)
+     doc_id = input("Enter ID to search: ").strip()
 
-     documents = []
-     for username,email in datas:
-          documents.append({
-               "username": username,
-               "email": email,
-               "createdAt": datetime.now(timezone.utc),
-          })
-     # Insert a new document(auto-generated id)
-     result = collection.insert_many(documents)
 
-     print(f"Collection {collection.name} is ready in MongoDB! Inserted ID: {result.inserted_ids}, {result.acknowledged}")
-     print(f"{len(result.inserted_ids)} documents inserted.")
+     try:
+          object_id = ObjectId(doc_id)
+
+     except Exception:
+          print("Invalid ID format - must be a valid objectID string.")
+          client.close()
+          exit()
+
+     # Get document by id
+     result = collection.find_one({"_id":object_id})
+
+     if result:
+          print(result)
+     else:
+          print("No record found with that ID.")
 
 except Exception as e:
      print("Connection failed: ",e)
