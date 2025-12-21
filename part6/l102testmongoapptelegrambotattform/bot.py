@@ -6,7 +6,29 @@ from datetime import datetime,timezone
 from dotenv import load_dotenv
 import os
 
+from fastapi import FastAPI
+import uvicorn
+import threading
+
 load_dotenv()
+
+
+# =========================
+# Fake Web Server (Render)
+# =========================
+web_app = FastAPI()
+
+@web_app.get("/")
+async def health():
+    return {"status": "ok"}
+
+def run_uvicorn():
+     uvicorn.run(
+        web_app,
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 10000)),
+        log_level="warning",
+     )
 
 # Conversation States
 CLASS,STUDENTID,ATTCODE = range(3)
@@ -128,4 +150,5 @@ def main():
 
 if __name__ == "__main__":
      # print(os.getenv("TELEGRAM_TOKEN"))
+     threading.Thread(target=run_uvicorn, daemon=True).start()
      main()

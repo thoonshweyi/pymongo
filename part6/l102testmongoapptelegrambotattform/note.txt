@@ -208,3 +208,8 @@ https://dashboard.render.com/
           Click = "Deploy Web Service"
 
 ---------------------------------------------------------------------------------------------------------
+=> Fake Server for Render.com
+     pip install fastapi
+     pip install uvicorn
+
+     pip3 list       or        pip list
